@@ -1,29 +1,80 @@
-const canvas = document.getElementById("myCanvas");
+const canvas = document.getElementById("my-Canvas");
 const ctx = canvas.getContext('2d');
 const startButton = document.getElementById("startButton")
+const bgImg = new Image();
+bgImg.src = "./images/background4.jpg"
 
 const dimitri = {
     img : '',
-    x : canvas.width / 2,
-    y : canvas.heigth,
+    x : canvas.width / 2 - 50,
+    y : canvas.height - 100,
     gravity : 1,
-    gravitySpeed : .5,
+    gravitySpeed : 2,
     health : 100,
     jump : false,
+    isOnTheFloor : true,
+    canJump : function () {
+        if(this.y === canvas.height - 100){
+            this.isOnTheFloor = true
+        } else {
+            this.isOnTheFloor = false
+        }
+    },
+    jumps : function () {
+        if (this.isOnTheFloor) {
+            this.y -= 10
+        } else {
+            this.y += this.gravity * this.gravitySpeed
+        }
+    },
     draw : function () {
         ctx.fillRect(this.x, this.y, 100, 100)
     },
     moveRight : function () {
-        if(x < 700){
-            this.x += 5
-        } 
+        if(this.x < canvas.width - 100){
+            this.x += 10
+        } else {this.x += 0}
     },
     moveLeft : function () {
-        if(x > 0){
-            this.x -= 5
-        }
+        if(this.x > 0){
+            this.x -= 10
+        }  else {this.x += 0}
     },
+
 }
+
+window.addEventListener("keydown", (event) => {
+    if (event.code === 'ArrowRight') {
+      dimitri.moveRight();
+    }
+  });
+
+  window.addEventListener("keydown", (event) => {
+    if (event.code === 'ArrowLeft') {
+      dimitri.moveLeft();
+    }
+  }); 
+
+  window.addEventListener("keydown", (event) => {
+      dimitri.canJump()
+    if (event.code === "Space" && dimitri.isOnTheFloor === true) {
+      dimitri.jumps();
+    }
+  });
+  
+  window.addEventListener("keyup", (event) => {
+    if (event.code === "Space") {
+      dimitri.jump = false;
+    }
+  });
+
+const bgImgAnime = {
+    img: bgImg,
+    x: 0,
+    draw: function () {
+      ctx.drawImage(this.img, this.x, 0);
+    },
+  };
 
 class Bottle {
     constructor() {
@@ -72,12 +123,10 @@ function startGame() {
     setInterval(() => {
         console.log(1)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'grey';
-    console.log(2)
-    ctx.fillRect(0, 0, canvas.width, canvas.heigth);
+    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'blue'
-    dimitri.draw()
+    dimitri.draw(); 
     console.log(3)
-}, 20)
+}, 10)
 }
 
