@@ -120,7 +120,7 @@ function updateBottles() {
       frames++;
       if (frames % 50 === 0) {
         bottles.push(
-            new Bottle(Math.floor(Math.random() * 1150), 0, 50, 100, 6, 'red')
+            new Bottle(Math.floor(Math.random() * 1150), -100, 50, 100, 6, 'red')
         );
       }
     }
@@ -159,7 +159,7 @@ function updateBigMacs() {
      
      if (frames % 120 === 0) {
        bigMacs.push(
-           new BigMac(Math.floor(Math.random() * 1150), 0, 50, 50, 4, 'green')
+           new BigMac(Math.floor(Math.random() * 1150), -50, 50, 50, 4, 'green')
        );
      }
    }
