@@ -4,12 +4,16 @@ const startButton = document.getElementById("startButton")
 const bgImg = new Image();
 bgImg.src = "./images/background4.jpg"
 
+const bottles = []
+const bigMacs = []
+let frames = 0
+
 const dimitri = {
     img : '',
     x : canvas.width / 2 - 50,
     y : canvas.height - 100,
-    gravity : 1,
-    gravitySpeed : 2,
+    gravity : 2 ,
+    gravitySpeed : 1.2 ,
     health : 100,
     jump : false,
     isOnTheFloor : true,
@@ -20,24 +24,30 @@ const dimitri = {
             this.isOnTheFloor = false
         }
     },
+    gravityOn : function () {
+        if (this.y < canvas.height - 100 ){
+            let fall = this.gravity * this.gravitySpeed
+            this.y += fall
+        } else if (this.y > canvas.height - 100) {
+            this.y = canvas.height - 100
+        }
+    },
     jumps : function () {
         if (this.isOnTheFloor) {
-            this.y -= 10
-        } else {
-            this.y += this.gravity * this.gravitySpeed
-        }
+            this.y -= 200
+        } else this.gravityOn()
     },
     draw : function () {
         ctx.fillRect(this.x, this.y, 100, 100)
     },
     moveRight : function () {
         if(this.x < canvas.width - 100){
-            this.x += 10
+            this.x += 40
         } else {this.x += 0}
     },
     moveLeft : function () {
         if(this.x > 0){
-            this.x -= 10
+            this.x -= 40
         }  else {this.x += 0}
     },
 
@@ -60,6 +70,7 @@ window.addEventListener("keydown", (event) => {
     if (event.code === "Space" && dimitri.isOnTheFloor === true) {
       dimitri.jumps();
     }
+    
   });
   
   window.addEventListener("keyup", (event) => {
@@ -77,29 +88,81 @@ const bgImgAnime = {
   };
 
 class Bottle {
-    constructor() {
-        this.x = Math.floor(Math.random * 750);
-        this.y = 0;
-        this.width = 50;
-        this.heigth = 100;
-        this.speed = 6;
-        this.color = 'red'
+    constructor(argX, argY, argWidth, argHeight, argSpeed, argColor) {
+        this.x = argX;
+        this.y = argY;
+        this.width = argWidth;
+        this.height = argHeight;
+        this.speed = argSpeed;
+        this.color = argColor
     }
 
-    //draw() 
+    move() {
+        this.y += this.speed
+    }
+    
+    draw() {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y, this.width, this.height)
+    }
 
 }
+
+function updateBottles() {
+     /*  let bottle = new Bottle(Math.floor(Math.random() * 1150), 0, 50, 100, 6, 'red')
+      bottle.draw()
+      console.log(bottle)
+ */
+      bottles.forEach((bottle) => {
+        bottle.draw();
+        bottle.move()
+      });
+      frames++;
+      if (frames % 50 === 0) {
+        bottles.push(
+            new Bottle(Math.floor(Math.random() * 1150), 0, 50, 100, 6, 'red')
+        );
+      }
+    }
+    
+      
 
 class BigMac {
-    constructor(){
-        this.x = Math.floor(Math.random * 750)
-        this.y = 0
-        this.width = 50;
-        this.height = 50;
-        this.speed = 4;
-        this.color = 'green'
+    constructor(argX, argY, argWidth, argHeight, argSpeed, argColor) {
+        this.x = argX;
+        this.y = argY;
+        this.width = argWidth;
+        this.height = argHeight;
+        this.speed = argSpeed;
+        this.color = argColor
+    }
+
+    move() {
+        this.y += this.speed
+    }
+    
+    draw() {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y, this.width, this.height)
     }
 }
+
+function updateBigMacs() {
+    /*  let bottle = new Bottle(Math.floor(Math.random() * 1150), 0, 50, 100, 6, 'red')
+     bottle.draw()
+     console.log(bottle)
+*/
+     bigMacs.forEach((bigmac) => {
+       bigmac.draw();
+       bigmac.move()
+     });
+     
+     if (frames % 120 === 0) {
+       bigMacs.push(
+           new BigMac(Math.floor(Math.random() * 1150), 0, 50, 50, 4, 'green')
+       );
+     }
+   }
 
 class Striker {
     constructor(argX, argSpeed){
@@ -126,7 +189,10 @@ function startGame() {
     ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'blue'
     dimitri.draw(); 
+    dimitri.gravityOn()
     console.log(3)
+    updateBottles()
+    console.log(Math.floor(Math.random() * 750))
+    updateBigMacs()
 }, 10)
 }
-
