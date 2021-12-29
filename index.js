@@ -3,33 +3,43 @@ const ctx = canvas.getContext('2d');
 const startButton = document.getElementById("startButton")
 const bgImg = new Image();
 bgImg.src = "./images/background4.jpg"
+const bigMacImg = new Image();
+bigMacImg.src = './images/bigmac.png'
+const dimitriImg = new Image();
+dimitriImg.src = '/images/dimitriHD.png'
+const bottleImg = new Image();
+bottleImg.src = './images/christaline.png'
+let strikerImg = new Image();
+strikerImg.src = './images/strikerRight.png'
 
 const bottles = []
 const bigMacs = []
+const strikers = []
 let frames = 0
 
 const dimitri = {
-    img : '',
+    img : dimitriImg,
     x : canvas.width / 2 - 50,
-    y : canvas.height - 100,
+    y : canvas.height - 150,
     gravity : 2 ,
     gravitySpeed : 1.2 ,
     health : 100,
     jump : false,
     isOnTheFloor : true,
+    score : 0,
     canJump : function () {
-        if(this.y === canvas.height - 100){
+        if(this.y === canvas.height - 130){
             this.isOnTheFloor = true
         } else {
             this.isOnTheFloor = false
         }
     },
     gravityOn : function () {
-        if (this.y < canvas.height - 100 ){
+        if (this.y < canvas.height - 130 ){
             let fall = this.gravity * this.gravitySpeed
             this.y += fall
-        } else if (this.y > canvas.height - 100) {
-            this.y = canvas.height - 100
+        } else if (this.y > canvas.height - 130) {
+            this.y = canvas.height - 130
         }
     },
     jumps : function () {
@@ -38,7 +48,7 @@ const dimitri = {
         } else this.gravityOn()
     },
     draw : function () {
-        ctx.fillRect(this.x, this.y, 100, 100)
+        ctx.drawImage(this.img, this.x, this.y, 90, 130)
     },
     moveRight : function () {
         if(this.x < canvas.width - 100){
@@ -50,8 +60,20 @@ const dimitri = {
             this.x -= 40
         }  else {this.x += 0}
     },
-
+    updateScore : function () {
+        if (frames % 45 === 0) this.score += 1
+        console.log(this.score)
+    }
 }
+
+/* function updateScore () {
+    let score = 0
+    if (frames % 45 === 0) score += 1
+    console.log(score)
+    return score
+} */
+
+
 
 window.addEventListener("keydown", (event) => {
     if (event.code === 'ArrowRight') {
@@ -103,7 +125,7 @@ class Bottle {
     
     draw() {
         ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+        ctx.drawImage(bottleImg, this.x, this.y, this.width, this.height)
     }
 
 }
@@ -120,7 +142,7 @@ function updateBottles() {
       frames++;
       if (frames % 50 === 0) {
         bottles.push(
-            new Bottle(Math.floor(Math.random() * 1150), -100, 50, 100, 6, 'red')
+            new Bottle(Math.floor(Math.random() * 1150), -100, 40, 110, 6, 'red')
         );
       }
     }
@@ -143,7 +165,7 @@ class BigMac {
     
     draw() {
         ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+        ctx.drawImage(bigMacImg, this.x, this.y, this.width, this.height)
     }
 }
 
@@ -165,14 +187,53 @@ function updateBigMacs() {
    }
 
 class Striker {
-    constructor(argX, argSpeed){
+    constructor(argX, argY, argWidth, argHeight, argSpeed, argColor){
         this.x = argX;
-        this.y = canvas.heigth;
+        this.y = argY;
+        this.width = argWidth;
+        this.height = argHeight;
         this.speed = argSpeed;
-        this.width = 60;
-        this.heigth = 80;
-        this.color = 'black'
+        this.color = argColor
     }
+
+    move() {
+        this.x += this.speed
+    }
+
+    draw () {
+        ctx.fillStyle = this.color
+        ctx.drawImage(strikerImg, this.x, this.y, this.width, this.height)
+    }
+}
+
+function strikerSide () {
+    let index = Math.floor(Math.random() * 2);
+    return index
+}
+
+function updateStriker () {
+    let speed = 7
+    let x = - 50
+    let side = strikerSide()
+        if (side === 1)  {
+            speed = -7 ; 
+            x = 1200;
+            strikerImg.src = './images/strikerLeft.png'
+        }
+        /* else if (side === 0) {
+            speed = 7;
+            x = - 50
+        } */   
+        strikers.forEach((striker) => {
+            striker.draw();
+            striker.move()
+          });
+          
+          if (frames % 400 === 0) {
+            strikers.push(
+                new Striker(x, canvas.height - 90, 70, 90, speed, 'black')
+            );
+          }
 }
 
 window.onload = function() {
@@ -184,15 +245,14 @@ window.onload = function() {
 
 function startGame() {
     setInterval(() => {
-        console.log(1)
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'blue'
     dimitri.draw(); 
     dimitri.gravityOn()
-    console.log(3)
     updateBottles()
-    console.log(Math.floor(Math.random() * 750))
     updateBigMacs()
+    updateStriker()
+    dimitri.updateScore()
 }, 10)
 }
