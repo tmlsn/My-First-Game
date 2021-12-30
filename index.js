@@ -9,8 +9,10 @@ const dimitriImg = new Image();
 dimitriImg.src = '/images/dimitriHD.png'
 const bottleImg = new Image();
 bottleImg.src = './images/christaline.png'
-let strikerImg = new Image();
-strikerImg.src = './images/strikerRight.png'
+const strikerImgRight = new Image();
+strikerImgRight.src = './images/strikerRight.png'
+const strikerImgLeft = new Image();
+strikerImgLeft.src = './images/strikerLeft.png'
 
 const bottles = []
 const bigMacs = []
@@ -21,6 +23,8 @@ const dimitri = {
     img : dimitriImg,
     x : canvas.width / 2 - 50,
     y : canvas.height - 150,
+    width : 90,
+    height : 130,
     gravity : 2 ,
     gravitySpeed : 1.2 ,
     health : 100,
@@ -48,7 +52,7 @@ const dimitri = {
         } else this.gravityOn()
     },
     draw : function () {
-        ctx.drawImage(this.img, this.x, this.y, 90, 130)
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
     },
     moveRight : function () {
         if(this.x < canvas.width - 100){
@@ -63,6 +67,14 @@ const dimitri = {
     updateScore : function () {
         if (frames % 45 === 0) this.score += 1
         console.log(this.score)
+    },
+    colision : function (obstacle) {
+        if (obstacle.x > this.x + this.width - 25 || this.x + 22 > obstacle.x + obstacle.width  
+            || obstacle.y > this.y + this.height || this.y > obstacle.y + obstacle.height ){
+                return false
+            }
+             return true
+            
     }
 }
 
@@ -131,10 +143,7 @@ class Bottle {
 }
 
 function updateBottles() {
-     /*  let bottle = new Bottle(Math.floor(Math.random() * 1150), 0, 50, 100, 6, 'red')
-      bottle.draw()
-      console.log(bottle)
- */
+    
       bottles.forEach((bottle) => {
         bottle.draw();
         bottle.move()
@@ -170,10 +179,7 @@ class BigMac {
 }
 
 function updateBigMacs() {
-    /*  let bottle = new Bottle(Math.floor(Math.random() * 1150), 0, 50, 100, 6, 'red')
-     bottle.draw()
-     console.log(bottle)
-*/
+   
      bigMacs.forEach((bigmac) => {
        bigmac.draw();
        bigmac.move()
@@ -187,9 +193,10 @@ function updateBigMacs() {
    }
 
 class Striker {
-    constructor(argX, argY, argWidth, argHeight, argSpeed, argColor){
+    constructor(argX, argY, argImg, argWidth, argHeight, argSpeed, argColor){
         this.x = argX;
         this.y = argY;
+        this.img = argImg;
         this.width = argWidth;
         this.height = argHeight;
         this.speed = argSpeed;
@@ -200,9 +207,8 @@ class Striker {
         this.x += this.speed
     }
 
-    draw () {
-        ctx.fillStyle = this.color
-        ctx.drawImage(strikerImg, this.x, this.y, this.width, this.height)
+    draw() {
+        ctx.drawImage(this.img, this.x, this.y, this.width, this.height)
     }
 }
 
@@ -215,25 +221,63 @@ function updateStriker () {
     let speed = 7
     let x = - 50
     let side = strikerSide()
-        if (side === 1)  {
-            speed = -7 ; 
-            x = 1200;
-            strikerImg.src = './images/strikerLeft.png'
-        }
-        /* else if (side === 0) {
-            speed = 7;
-            x = - 50
-        } */   
+          
         strikers.forEach((striker) => {
-            striker.draw();
+            striker.draw()
             striker.move()
           });
           
-          if (frames % 400 === 0) {
+          if (frames % 400 === 0 && side === 1 ) {
+            speed = -7 ; 
+            x = 1200 ;
             strikers.push(
-                new Striker(x, canvas.height - 90, 70, 90, speed, 'black')
+                new Striker(x, canvas.height - 100, strikerImgLeft, 70, 100, speed, 'black')
             );
           }
+          else if (frames % 400 === 0 && side === 0 ) {
+            strikers.push(
+                new Striker(x, canvas.height - 100, strikerImgRight, 70, 100, speed, 'black')
+            );
+          }
+}
+
+function checkForColisionBottle (){
+    bottles.forEach((bottle) => {
+        let colision = dimitri.colision(bottle)
+        if(colision === true){
+            //dimitri.health -= 30
+            bottles.splice(bottle.index, 1)
+            console.log(dimitri.health)
+            return true
+        }
+        console.log(colision)
+       if(colision === true) dimitri.health -= 30
+      });
+}
+
+function checkForColisionStriker (){
+    strikers.forEach((striker) => {
+        let colision = dimitri.colision(striker)
+        if(colision === true){
+            dimitri.health -= 15
+            strikers.splice(striker.index, 1)
+            
+        }
+        
+      });
+}
+
+function checkForColisionBigMacs (){
+    bigMacs.forEach((bigMac) => {
+        let colision = dimitri.colision(bigMac)
+        if(colision === true){
+            dimitri.health += 10
+            dimitri.score += 15
+            bigMacs.splice(bigMac.index, 1)
+            
+        }
+        
+      });
 }
 
 window.onload = function() {
@@ -254,5 +298,9 @@ function startGame() {
     updateBigMacs()
     updateStriker()
     dimitri.updateScore()
+    checkForColisionBottle()
+    checkForColisionStriker()
+    checkForColisionBigMacs()
+    console.log(dimitri.health)
 }, 10)
 }
