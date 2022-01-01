@@ -8,6 +8,9 @@ bgImg.src = "./images/background4.jpg"
 const bigMacImg = new Image();
 bigMacImg.src = './images/bigmac.png'
 
+const landingImg = new Image()
+landingImg.src = './images/landingPage.jpg'
+
 const dimitriImg = new Image();
 dimitriImg.src = './images/dimitriHD.png'
 const dimitriMiddleImg = new Image()
@@ -319,6 +322,22 @@ function checkForColisionBigMacs (){
       });
 }
 
+/* function healthBar () {
+    if(dimitri.health <= 50 && dimitri.health > 25) {
+        ctx.fillStyle = 'green'
+        ctx.fillRect(10, 10, dimitri.health, 10);
+        
+    } 
+    else if(dimitri.health <= 50 && dimitri.health > 25) {
+        ctx.fillStyle = 'orange'
+        ctx.fillRect(10, 10, dimitri.health, 10);
+    }
+    else if(dimitri.health <= 25) {
+        ctx.fillStyle = 'red'
+        ctx.fillRect(10, 10, dimitri.health, 10);
+    }
+} */
+
 function checkForGameOver () {
     const checkForHighScore = () =>  {
         if(dimitri.score > highScore) {
@@ -345,6 +364,7 @@ function checkForGameOver () {
 }
 
 window.onload = function() {
+    ctx.drawImage(landingImg, 0, 0, canvas.width, canvas.height)
     startButton.onclick = function () {
         startButton.disabled = true
         startGame();
@@ -369,6 +389,7 @@ function startGame() {
     console.log(dimitri.health)
     console.log(dimitri.score)
     checkForGameOver()
+    //healthBar()
     console.log(highScore)
 }, 10)
 }
