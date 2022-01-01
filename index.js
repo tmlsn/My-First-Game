@@ -1,14 +1,26 @@
 const canvas = document.getElementById("my-Canvas");
 const ctx = canvas.getContext('2d');
 const startButton = document.getElementById("startButton")
+
 const bgImg = new Image();
 bgImg.src = "./images/background4.jpg"
+
 const bigMacImg = new Image();
 bigMacImg.src = './images/bigmac.png'
+
 const dimitriImg = new Image();
-dimitriImg.src = '/images/dimitriHD.png'
+dimitriImg.src = './images/dimitriHD.png'
+const dimitriMiddleImg = new Image()
+dimitriMiddleImg.src = './images/dimitriMoyen.png'
+const dimitriLowImg = new Image()
+dimitriLowImg.src = './images/dimitriBas.png'
+const dimitriDownImg = new Image()
+dimitriDownImg.src = './images/dimitriDown.png'
+
+
 const bottleImg = new Image();
 bottleImg.src = './images/christaline.png'
+
 const strikerImgRight = new Image();
 strikerImgRight.src = './images/strikerRight.png'
 const strikerImgLeft = new Image();
@@ -18,6 +30,8 @@ const bottles = []
 const bigMacs = []
 const strikers = []
 let frames = 0
+let highScore = 0
+let myGame
 
 const dimitri = {
     img : dimitriImg,
@@ -32,18 +46,18 @@ const dimitri = {
     isOnTheFloor : true,
     score : 0,
     canJump : function () {
-        if(this.y === canvas.height - 130){
+        if(this.y === canvas.height - this.height){
             this.isOnTheFloor = true
         } else {
             this.isOnTheFloor = false
         }
     },
     gravityOn : function () {
-        if (this.y < canvas.height - 130 ){
+        if (this.y < canvas.height - this.height ){
             let fall = this.gravity * this.gravitySpeed
             this.y += fall
-        } else if (this.y > canvas.height - 130) {
-            this.y = canvas.height - 130
+        } else if (this.y > canvas.height - this.height) {
+            this.y = canvas.height - this.height
         }
     },
     jumps : function () {
@@ -72,9 +86,31 @@ const dimitri = {
         if (obstacle.x > this.x + this.width - 25 || this.x + 22 > obstacle.x + obstacle.width  
             || obstacle.y > this.y + this.height || this.y > obstacle.y + obstacle.height ){
                 return false
-            }
-             return true
+            } else return true
             
+    },
+    stateOfDimitri : function () {
+        if (this.health >= 75){
+            this.img = dimitriImg
+            this.height = 130
+            this.width = 90
+        }
+        else if(this.health < 75 && this.health >= 40){
+            this.img = dimitriMiddleImg
+            this.height = 120
+            this.width = 85
+
+        }
+        else if(this.health < 40 && this.health > 0){
+            this.img = dimitriLowImg
+            this.height = 80
+            this.width = 60
+        }
+        else if (this.health <= 0){
+            this.img = dimitriDownImg
+            
+        }
+
     }
 }
 
@@ -245,13 +281,14 @@ function checkForColisionBottle (){
     bottles.forEach((bottle) => {
         let colision = dimitri.colision(bottle)
         if(colision === true){
-            //dimitri.health -= 30
+            dimitri.health -= 30
             bottles.splice(bottle.index, 1)
             console.log(dimitri.health)
-            return true
+            
         }
-        console.log(colision)
-       if(colision === true) dimitri.health -= 30
+        else if (bottle.y > canvas.height) bottles.splice(bottle.index, 1)
+        
+         console.log(colision)
       });
 }
 
@@ -263,6 +300,7 @@ function checkForColisionStriker (){
             strikers.splice(striker.index, 1)
             
         }
+        else if (striker.x > canvas.width + striker.width || striker.x < -striker.width) strikers.splice(striker.index, 1)
         
       });
 }
@@ -271,13 +309,39 @@ function checkForColisionBigMacs (){
     bigMacs.forEach((bigMac) => {
         let colision = dimitri.colision(bigMac)
         if(colision === true){
-            dimitri.health += 10
+            dimitri.health += 20
             dimitri.score += 15
             bigMacs.splice(bigMac.index, 1)
-            
         }
+        else if (dimitri.health > 100) dimitri.health = 100
+        else if (bigMac.y > canvas.height) bigMacs.splice(bigMac.index, 1)
         
       });
+}
+
+function checkForGameOver () {
+    const checkForHighScore = () =>  {
+        if(dimitri.score > highScore) {
+            highScore = dimitri.score
+        }
+    }
+
+    if(dimitri.health <= 0) {
+        //ctx.clearRect(0, 0, canvas.width, canvas.height)
+        checkForHighScore()
+        clearInterval(myGame)
+        bottles.splice(0, bottles.length)
+        strikers.splice(0, strikers.length)
+        bigMacs.splice(0, bigMacs.length)
+        startButton.disabled = false
+        console.log(dimitri)
+        dimitri.draw()
+        dimitri.health = 100
+        dimitri.score = 0
+        dimitri.x = canvas.width / 2 - 50
+        dimitri.y = canvas.height - 150
+    }
+    
 }
 
 window.onload = function() {
@@ -288,10 +352,11 @@ window.onload = function() {
 }
 
 function startGame() {
-    setInterval(() => {
+    myGame = setInterval(() => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'blue'
+    dimitri.stateOfDimitri()
     dimitri.draw(); 
     dimitri.gravityOn()
     updateBottles()
@@ -302,5 +367,8 @@ function startGame() {
     checkForColisionStriker()
     checkForColisionBigMacs()
     console.log(dimitri.health)
+    console.log(dimitri.score)
+    checkForGameOver()
+    console.log(highScore)
 }, 10)
 }
