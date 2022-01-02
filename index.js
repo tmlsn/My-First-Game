@@ -38,8 +38,8 @@ let myGame
 
 const dimitri = {
     img : dimitriImg,
-    x : canvas.width / 2 - 50,
-    y : canvas.height - 150,
+    x : canvas.width / 2 - 65,
+    y : canvas.height - 130,
     width : 90,
     height : 130,
     gravity : 2 ,
@@ -111,7 +111,9 @@ const dimitri = {
         }
         else if (this.health <= 0){
             this.img = dimitriDownImg
-            
+            this.width = 140
+            this.height = 50
+            this.y = canvas.height - 50
         }
 
     }
@@ -347,6 +349,10 @@ function checkForGameOver () {
 
     if(dimitri.health <= 0) {
         //ctx.clearRect(0, 0, canvas.width, canvas.height)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+        dimitri.stateOfDimitri()
+        dimitri.draw()
         checkForHighScore()
         clearInterval(myGame)
         bottles.splice(0, bottles.length)
@@ -354,7 +360,6 @@ function checkForGameOver () {
         bigMacs.splice(0, bigMacs.length)
         startButton.disabled = false
         console.log(dimitri)
-        dimitri.draw()
         dimitri.health = 100
         dimitri.score = 0
         dimitri.x = canvas.width / 2 - 50
@@ -362,6 +367,7 @@ function checkForGameOver () {
     }
     
 }
+
 
 window.onload = function() {
     ctx.drawImage(landingImg, 0, 0, canvas.width, canvas.height)
