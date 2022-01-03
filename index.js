@@ -175,10 +175,10 @@ window.addEventListener("keydown", (event) => {
     }
   });
 
-   Object.addEventListener("touchstart", (touch) => {
-      if (touch.clientx >= canvas.width / 3) dimitri.moveLeft();
-      else if (touch.clientx > canvas.width / 3 || touch.clientx < canvas.width - (canvas.width/3)) dimitri.jumps();
-      else if (touch.clientx > canvas.width - (canvas.width/3)) dimitri.moveRight();
+   Object.addEventListener("touchstart", () => {
+      if (Touch.clientX >= canvas.width / 3) dimitri.moveLeft();
+      else if (Touch.clientX > canvas.width / 3 || Touch.clientX < canvas.width - (canvas.width/3)) dimitri.jumps();
+      else if (Touch.clientX > canvas.width - (canvas.width/3)) dimitri.moveRight();
   }) 
 
 const bgImgAnime = {
