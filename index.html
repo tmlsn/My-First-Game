@@ -8,7 +8,33 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <ul class="infos">
+        <li> <button id="startButton"> Start Game </button> </li>
+        <li id="controls"> Controls
+            <ul class="controlDetails">
+                <li class="rules"> Left arrow ← : <b>go left</b></li>
+                <li class="rules"> Right arrow → : <b>go right</b></li>
+                <li class="rules"> Spacebar or Up arrow ↑ : <b>jump</b></li>
+            </ul>
+        </li>
+        <li id="highscore"></li>
+        <li id="health"></li>
+        <li id="score"></li>
+
+    </ul>
+
+
+<!-- 
+   <div class="infos">
+       <ul>
     <button id="startButton"> Start Game </button>
+    <div >
+    </div>
+    <div id="highscore"></div>
+    <div id="health"></div>
+    <div id="score"></div>
+       </ul>
+</div> -->
     <div id="game-Board">
         <canvas width="1200" height="600" id="my-Canvas"></canvas>
     </div>

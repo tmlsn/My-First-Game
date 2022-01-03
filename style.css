@@ -1,3 +1,66 @@
 #my-Canvas {
     background-color: gray;
+    
+}
+
+#game-Board {
+    display: flex;
+    justify-content: center;
+}
+
+.infos {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    list-style: none;
+}
+
+#controls {
+    position:absolute
+}
+
+#controls:hover {
+    
+    cursor: pointer;
+    
+}
+
+#controls::after {
+    content : '▼'
+}
+
+.controlDetails {
+    display: none;
+    position:absolute;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0px 1px 2px #ccc;
+    z-index: 1000;
+    list-style: none;
+}
+
+
+#controls:hover .controlDetails {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    
+}
+
+.controlDetails li {
+    float: none;
+    width: 100%;
+    text-align: left;
+}
+
+ul li {
+    position: relative;
+    text-align: center;
+}
+
+.rules {
+    margin-bottom: 10px;
+    margin-top: 15px;
+    margin-left: -30px;
 }
