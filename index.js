@@ -56,7 +56,7 @@ let myGame
 
 const dimitri = {
     img : dimitriImg,
-    x : canvas.width / 2 - 65,
+    x : canvas.width / 2 - 45,
     y : canvas.height - 130,
     width : 90,
     height : 130,
@@ -175,7 +175,7 @@ window.addEventListener("keydown", (event) => {
     }
   });
 
-   Object.addEventListener("touchstart", () => {
+   window.addEventListener("touchstart", () => {
       if (Touch.clientX >= canvas.width / 3) dimitri.moveLeft();
       else if (Touch.clientX > canvas.width / 3 || Touch.clientX < canvas.width - (canvas.width/3)) dimitri.jumps();
       else if (Touch.clientX > canvas.width - (canvas.width/3)) dimitri.moveRight();
