@@ -175,7 +175,11 @@ window.addEventListener("keydown", (event) => {
     }
   });
 
-  
+   Object.addEventListener("touchstart", (touch) => {
+      if (touch.clientx >= canvas.width / 3) dimitri.moveLeft();
+      else if (touch.clientx > canvas.width / 3 || touch.clientx < canvas.width - (canvas.width/3)) dimitri.jumps();
+      else if (touch.clientx > canvas.width - (canvas.width/3)) dimitri.moveRight();
+  }) 
 
 const bgImgAnime = {
     img: bgImg,
