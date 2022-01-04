@@ -33,6 +33,12 @@ strikerImgRight.src = './images/strikerRight.png'
 const strikerImgLeft = new Image();
 strikerImgLeft.src = './images/strikerLeft.png'
 
+const gameOverImg = new Image();
+gameOverImg.src = './images/gameOver.png'
+
+const highscoreImg = new Image();
+highscoreImg.src = './images/highscore.png'
+
 const bgSound = new Audio()
 bgSound.src = './sound/backgroundSound.mp3'
 bgSound.volume = 0.35
@@ -44,6 +50,10 @@ bonusSound.src = './sound/soundBonus.mp3'
 bonusSound.volume = 0.65
 const youLoseSound = new Audio()
 youLoseSound.src = './sound/youLoseSound.mp3'
+const hornSound = new Audio()
+hornSound.src = './sound/horn.mp3'
+const applauseSound = new Audio('./sound/applause.mp3')
+const whistleSound = new Audio('./sound/whistle.mp3')
 
 const bottles = []
 const bigMacs = []
@@ -107,11 +117,15 @@ const dimitri = {
         console.log(this.score)
     },
     colision : function (obstacle) {
-        if (obstacle.x > this.x + this.width - 25 || this.x + 22 > obstacle.x + obstacle.width  
-            || obstacle.y > this.y + this.height || this.y > obstacle.y + obstacle.height ){
+        if (dimitri.img === dimitriImg){
+            if (obstacle.x > this.x + this.width - 25 || this.x + 22 > obstacle.x + obstacle.width  || obstacle.y > this.y + this.height || this.y > obstacle.y + obstacle.height ){
                 return false
             } else return true
-            
+        } else {
+            if (obstacle.x > this.x + this.width - 10 || this.x + 10 > obstacle.x + obstacle.width  || obstacle.y > this.y + this.height || this.y > obstacle.y + obstacle.height ){
+                return false
+            } else return true
+        }
     },
     stateOfDimitri : function () {
         if (this.health >= 75){
@@ -139,6 +153,18 @@ const dimitri = {
 
     }
 }
+
+/* const gameOver = {
+    img : gameOverImg,
+
+    draw : function () {
+        ctx.drawImage(this.img, 50, canvas.height, 394, 666)
+    },
+
+    move : function () {
+
+    }
+} */
 
 /* function updateScore () {
     let score = 0
@@ -175,11 +201,11 @@ window.addEventListener("keydown", (event) => {
     }
   });
 
-   window.addEventListener("touchstart", () => {
+  /*  window.addEventListener("touchstart", () => {
       if (Touch.clientX >= canvas.width / 3) dimitri.moveLeft();
       else if (Touch.clientX > canvas.width / 3 || Touch.clientX < canvas.width - (canvas.width/3)) dimitri.jumps();
       else if (Touch.clientX > canvas.width - (canvas.width/3)) dimitri.moveRight();
-  }) 
+  })  */
 
 const bgImgAnime = {
     img: bgImg,
@@ -377,6 +403,17 @@ function checkForGameOver () {
         if(dimitri.score > highScore) {
             highScore = dimitri.score
             highscoreDiv.innerHTML = `Highscore : ${highScore}` 
+            setTimeout(() => {
+                applauseSound.play()
+            }, 500)
+            
+            setTimeout(() => {
+                ctx.drawImage(highscoreImg, canvas.width - 500, canvas.height -320, 450, 320);
+                hornSound.play()
+                
+            }, 3500)
+            
+            
         }
     }
 
@@ -391,16 +428,23 @@ function checkForGameOver () {
         bottles.splice(0, bottles.length)
         strikers.splice(0, strikers.length)
         bigMacs.splice(0, bigMacs.length)
-        startButton.disabled = false
         console.log(dimitri)
         dimitri.health = 100
         dimitri.score = 0
         dimitri.x = canvas.width / 2 - 50
         dimitri.y = canvas.height - 150
-        youLoseSound.play()
+        whistleSound.play()
         bgSound.loop = false
         bgSound.pause()
         bgSound.currentTime = 0
+        setTimeout(() => {
+            ctx.drawImage(gameOverImg, 50, canvas.height -  550, 394, 666)
+            youLoseSound.play()
+        },1500)
+        setTimeout(() => {
+            startButton.disabled = false
+        }, 3000)
+        
     }
     
 }
@@ -428,6 +472,8 @@ window.onload = function() {
 
 function startGame() {
     myGame = setInterval(() => {
+    applauseSound.pause()
+    applauseSound.currentTime = 0
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'blue'
