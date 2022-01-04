@@ -243,7 +243,17 @@ function updateBottles() {
         bottle.move()
       });
       frames++;
-      if (frames % 50 === 0) {
+      if (frames % 60 === 0 && dimitri.score < 250) {
+        bottles.push(
+            new Bottle(Math.floor(Math.random() * 1150), -100, 40, 110, 6, 'red')
+        );
+      }
+      else if (frames % 50 === 0 && dimitri.score >= 250 && dimitri.score < 500 ) {
+        bottles.push(
+            new Bottle(Math.floor(Math.random() * 1150), -100, 40, 110, 6, 'red')
+        );
+      }
+      else if (frames % 40 === 0 && dimitri.score >= 500 ) {
         bottles.push(
             new Bottle(Math.floor(Math.random() * 1150), -100, 40, 110, 6, 'red')
         );
@@ -279,11 +289,21 @@ function updateBigMacs() {
        bigmac.move()
      });
      
-     if (frames % 120 === 0) {
+     if (frames % 100 === 0 && dimitri.score < 250) {
        bigMacs.push(
            new BigMac(Math.floor(Math.random() * 1150), -50, 50, 50, 4, 'green')
        );
      }
+     else if (frames % 150 === 0 && dimitri.score >= 250 && dimitri.score < 500 ) {
+        bigMacs.push(
+            new BigMac(Math.floor(Math.random() * 1150), -50, 50, 50, 4, 'green')
+        );
+      }
+      else if (frames % 200 === 0 && dimitri.score >= 500 ) {
+        bigMacs.push(
+            new BigMac(Math.floor(Math.random() * 1150), -50, 50, 50, 4, 'green')
+        );
+      }
    }
 
 class Striker {
@@ -321,14 +341,38 @@ function updateStriker () {
             striker.move()
           });
           
-          if (frames % 400 === 0 && side === 1 ) {
+          if (frames % 400 === 0 && side === 1 && dimitri.score < 250) {
             speed = -7 ; 
             x = 1200 ;
             strikers.push(
                 new Striker(x, canvas.height - 100, strikerImgLeft, 70, 100, speed, 'black')
             );
           }
-          else if (frames % 400 === 0 && side === 0 ) {
+          else if (frames % 400 === 0 && side === 0 && dimitri.score < 250) {
+            strikers.push(
+                new Striker(x, canvas.height - 100, strikerImgRight, 70, 100, speed, 'black')
+            );
+          }
+          else if (frames % 350 === 0 && side === 1 && dimitri.score >= 250 && dimitri.score < 500) {
+            speed = -7 ; 
+            x = 1200 ;
+            strikers.push(
+                new Striker(x, canvas.height - 100, strikerImgLeft, 70, 100, speed, 'black')
+            );
+          }
+          else if (frames % 350 === 0 && side === 0 && dimitri.score >= 250 && dimitri.score < 500) {
+            strikers.push(
+                new Striker(x, canvas.height - 100, strikerImgRight, 70, 100, speed, 'black')
+            );
+          }
+          else if (frames % 300 === 0 && side === 1 && dimitri.score >= 500) {
+            speed = -7 ; 
+            x = 1200 ;
+            strikers.push(
+                new Striker(x, canvas.height - 100, strikerImgLeft, 70, 100, speed, 'black')
+            );
+          }
+          else if (frames % 300 === 0 && side === 0 && dimitri.score >= 500) {
             strikers.push(
                 new Striker(x, canvas.height - 100, strikerImgRight, 70, 100, speed, 'black')
             );
