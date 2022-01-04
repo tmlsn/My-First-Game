@@ -344,7 +344,7 @@ function checkForColisionBigMacs (){
     bigMacs.forEach((bigMac) => {
         let colision = dimitri.colision(bigMac)
         if(colision === true){
-            dimitri.health += 20
+            dimitri.health += 10
             //healthDiv.innerHTML = `Health : ${dimitri.health}`
             dimitri.score += 15
             bigMacs.splice(bigMac.index, 1)
@@ -398,6 +398,9 @@ function checkForGameOver () {
         dimitri.x = canvas.width / 2 - 50
         dimitri.y = canvas.height - 150
         youLoseSound.play()
+        bgSound.loop = false
+        bgSound.pause()
+        bgSound.currentTime = 0
     }
     
 }
