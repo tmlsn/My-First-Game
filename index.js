@@ -1,20 +1,29 @@
+
+// setting the environment
 const canvas = document.getElementById("my-Canvas");
 const ctx = canvas.getContext('2d');
+
+// things displayed above the canvas
 const startButton = document.getElementById("startButton")
 
 const highscoreDiv = document.getElementById('highscore')
 const healthDiv = document.getElementById('health')
 const scoreDiv = document.getElementById('score')
 
+//all the image we will need in the game
 const bgImg = new Image();
 bgImg.src = "./images/background4.jpg"
-
-const bigMacImg = new Image();
-bigMacImg.src = './images/bigmac.png'
 
 const landingImg = new Image()
 landingImg.src = './images/landingPage.jpg'
 
+const gameOverImg = new Image();
+gameOverImg.src = './images/gameOver.png'
+
+const highscoreImg = new Image();
+highscoreImg.src = './images/highscore.png'
+
+//all images for the character/player
 const dimitriImg = new Image();
 dimitriImg.src = './images/dimitriHD.png'
 const dimitriMiddleImg = new Image()
@@ -24,7 +33,11 @@ dimitriLowImg.src = './images/dimitriBas.png'
 const dimitriDownImg = new Image()
 dimitriDownImg.src = './images/dimitriDown.png'
 
+//image for bonuses
+const bigMacImg = new Image();
+bigMacImg.src = './images/bigmac.png'
 
+//images for obstacles
 const bottleImg = new Image();
 bottleImg.src = './images/christaline.png'
 
@@ -33,27 +46,35 @@ strikerImgRight.src = './images/strikerRight.png'
 const strikerImgLeft = new Image();
 strikerImgLeft.src = './images/strikerLeft.png'
 
-const gameOverImg = new Image();
-gameOverImg.src = './images/gameOver.png'
-
-const highscoreImg = new Image();
-highscoreImg.src = './images/highscore.png'
-
+//All the sopunds we will hear in the game
 const bgSound = new Audio()
 bgSound.src = './sound/backgroundSound.mp3'
 bgSound.volume = 0.35
+
+//sound when we get hit
 const hitSound = new Audio()
 hitSound.src = './sound/hitSound.mp3'
 hitSound.volume = 0.65
+// to avoid the missing sound if we get hit two times in a short timelapse
+const secondHitSound = new Audio()
+secondHitSound.src = './sound/hitSound.mp3'
+secondHitSound.volume = 0.85
+
+// sound when we get bonuses
 const bonusSound = new Audio()
 bonusSound.src = './sound/soundBonus.mp3'
 bonusSound.volume = 0.65
+
+//sound when we lose
 const youLoseSound = new Audio()
 youLoseSound.src = './sound/youLoseSound.mp3'
+const whistleSound = new Audio('./sound/whistle.mp3')
+
+//sound when it's a new highscore
 const hornSound = new Audio()
 hornSound.src = './sound/horn.mp3'
 const applauseSound = new Audio('./sound/applause.mp3')
-const whistleSound = new Audio('./sound/whistle.mp3')
+
 
 const bottles = []
 const bigMacs = []
@@ -73,7 +94,6 @@ const dimitri = {
     gravity : 2 ,
     gravitySpeed : 1.2 ,
     health : 100,
-    jump : false,
     isOnTheFloor : true,
     score : 0,
     canJump : function () {
@@ -154,27 +174,6 @@ const dimitri = {
     }
 }
 
-/* const gameOver = {
-    img : gameOverImg,
-
-    draw : function () {
-        ctx.drawImage(this.img, 50, canvas.height, 394, 666)
-    },
-
-    move : function () {
-
-    }
-} */
-
-/* function updateScore () {
-    let score = 0
-    if (frames % 45 === 0) score += 1
-    console.log(score)
-    return score
-} */
-
-
-
 window.addEventListener("keydown", (event) => {
     if (event.code === 'ArrowRight') {
       dimitri.moveRight();
@@ -195,25 +194,6 @@ window.addEventListener("keydown", (event) => {
     
   });
   
-  window.addEventListener("keyup", (event) => {
-    if (event.code === "Space" || event.code === "ArrowUp") {
-      dimitri.jump = false;
-    }
-  });
-
-  /*  window.addEventListener("touchstart", () => {
-      if (Touch.clientX >= canvas.width / 3) dimitri.moveLeft();
-      else if (Touch.clientX > canvas.width / 3 || Touch.clientX < canvas.width - (canvas.width/3)) dimitri.jumps();
-      else if (Touch.clientX > canvas.width - (canvas.width/3)) dimitri.moveRight();
-  })  */
-
-const bgImgAnime = {
-    img: bgImg,
-    x: 0,
-    draw: function () {
-      ctx.drawImage(this.img, this.x, 0);
-    },
-  };
 
 class Bottle {
     constructor(argX, argY, argWidth, argHeight, argSpeed, argColor) {
@@ -387,6 +367,7 @@ function checkForColisionBottle (){
             //healthDiv.innerHTML = `Health : ${dimitri.health}`
             bottles.splice(bottle.index, 1)
             console.log(dimitri.health)
+            if(!hitSound.paused) secondHitSound.play()
             hitSound.play()
             
         }
@@ -403,6 +384,7 @@ function checkForColisionStriker (){
             dimitri.health -= 15
             //healthDiv.innerHTML = `Health : ${dimitri.health}`
             strikers.splice(striker.index, 1)
+            if(!hitSound.paused) secondHitSound.play()
             hitSound.play()
         }
         else if (striker.x > canvas.width + striker.width || striker.x < -striker.width) strikers.splice(striker.index, 1)
@@ -426,22 +408,6 @@ function checkForColisionBigMacs (){
       });
 }
 
-/* function healthBar () {
-    if(dimitri.health <= 50 && dimitri.health > 25) {
-        ctx.fillStyle = 'green'
-        ctx.fillRect(10, 10, dimitri.health, 10);
-        
-    } 
-    else if(dimitri.health <= 50 && dimitri.health > 25) {
-        ctx.fillStyle = 'orange'
-        ctx.fillRect(10, 10, dimitri.health, 10);
-    }
-    else if(dimitri.health <= 25) {
-        ctx.fillStyle = 'red'
-        ctx.fillRect(10, 10, dimitri.health, 10);
-    }
-} */
-
 function checkForGameOver () {
     const checkForHighScore = () =>  {
         if(dimitri.score > highScore) {
@@ -454,6 +420,7 @@ function checkForGameOver () {
             setTimeout(() => {
                 ctx.drawImage(highscoreImg, canvas.width - 500, canvas.height -320, 450, 320);
                 hornSound.play()
+                
                 
             }, 3500)
             
